@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bangalore House Price Prediction</title>
+
+        <!-- Favicon -->
+        <link rel="icon" href="https://emojicdn.elk.sh/🏠" type="image/x-icon">
+
+        <!-- jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+        <!-- Bootstrap 5 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+        <!-- Animate.css -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+        <!-- Custom CSS -->
+        <style>
+            :root {
+                --primary-color: #2c3e50;
+                --secondary-color: #3498db;
+                --accent-color: #e74c3c;
+                --light-color: #ecf0f1;
+                --dark-color: #2c3e50;
+                --success-color: #27ae60;
+            }
+
+            body {
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                min-height: 100vh;
+                position: relative;
+                padding-bottom: 60px;
+            }
+
+            .navbar {
+                background: var(--primary-color);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-brand {
+                font-weight: 700;
+                letter-spacing: 1px;
+                color: white !important;
+            }
+
+            h1, h2, h3 {
+                color: var(--primary-color);
+                font-weight: 700;
+                margin-bottom: 20px;
+                text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+
+            .section-title {
+                position: relative;
+                padding-bottom: 15px;
+                margin-bottom: 30px;
+            }
+
+            .section-title:after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 3px;
+                background: var(--secondary-color);
+            }
+
+            .card {
+                border: none;
+                border-radius: 12px;
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                background: white;
+                height: 100%;
+                margin-bottom: 20px;
+            }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .card-title {
+                color: var(--primary-color);
+                font-weight: 600;
+                margin-bottom: 15px;
+            }
+
+            select, input, textarea {
+                width: 100%;
+                padding: 10px 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                margin: 5px 0;
+                transition: all 0.3s;
+            }
+
+            select:focus, input:focus, textarea:focus {
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+                outline: none;
+            }
+
+            .btn-submit {
+                background-color: var(--secondary-color);
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 8px;
+                font-weight: 600;
+                letter-spacing: 1px;
+                transition: all 0.3s;
+                box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+            }
+
+            .btn-submit:hover {
+                background-color: #2980b9;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
+            }
+
+            .btn-submit:active {
+                transform: translateY(0);
+            }
+
+            .prediction-result {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                max-width: 600px;
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: var(--accent-color);
+                border-left: 5px solid var(--accent-color);
+            }
+
+            .error-message {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                max-width: 600px;
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #e74c3c;
+                border-left: 5px solid #e74c3c;
+                display: none;
+            }
+
+            .social-icon {
+                position: fixed;
+                right: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 100;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .social-icon a {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 1.5rem;
+                transition: all 0.3s;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .social-icon a:hover {
+                transform: scale(1.1) translateX(-5px);
+            }
+
+            .linkedin { background-color: #0077b5; }
+            .github { background-color: #333; }
+          
+
+            footer {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                background: var(--primary-color);
+                color: white;
+                padding: 15px 0;
+                text-align: center;
+                font-size: 0.9rem;
+            }
+
+            .form-note {
+                font-size: 0.8rem;
+                color: #7f8c8d;
+                margin-top: 5px;
+            }
+
+            .loading-spinner {
+                display: none;
+                margin: 20px auto;
+                border: 5px solid #f3f3f3;
+                border-top: 5px solid var(--secondary-color);
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                animation: spin 1s linear infinite;
+            }
+
+            .contact-info {
+                margin-bottom: 30px;
+            }
+
+            .contact-info i {
+                color: var(--secondary-color);
+                margin-right: 10px;
+                font-size: 1.2rem;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                .social-icon {
+                    position: static;
+                    flex-direction: row;
+                    justify-content: center;
+                    margin: 20px 0;
+                    transform: none;
+                }
+                
+                .social-icon a {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 1.2rem;
+                }
+                
+                h1 {
+                    font-size: 1.8rem;
+                }
+                
+                .section {
+                    padding: 40px 0;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand animate__animated animate__fadeInLeft" href="#">
+                    <i class="fas fa-home me-2"></i>Bangalore Real Estate
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#home"><i class="fas fa-chart-line me-1"></i> Predict</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#about"><i class="fas fa-info-circle me-1"></i> About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#contact"><i class="fas fa-envelope me-1"></i> Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Social Icons -->
+        <div class="social-icon">
+            <a href="https://www.linkedin.com/in/prajith-kumar-33a292242/" target="_blank" class="linkedin">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://github.com/PrajithYanapu" target="_blank" class="github">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+
+        <!-- Main Content - Prediction -->
+        <section id="home" class="section">
+            <div class="container py-4">
+                <h1 class="text-center animate__animated animate__fadeInDown">
+                    Bangalore House Price Prediction
+                </h1>
+                <p class="text-center text-muted mb-4 animate__animated animate__fadeIn animate__delay-1s">
+                    Get an accurate estimate of property prices in Bangalore
+                </p>
+
+                <form id="predictionForm" method="POST" action="{{ url_for('predict') }}">
+                    <div class="row g-4">
+                        <!-- Location and Area -->
+                        <div class="col-lg-6">
+                            <div class="card h-100 p-3">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-map-marker-alt me-2"></i>Location</h5>
+                                    <select class="form-select" name="loc" id="uiLocations" required>
+                                        <option value="" selected disabled>Select Location</option>
+                                    </select>
+                                    <p class="form-note">Choose the neighborhood of the property</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="card h-100 p-3">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-vector-square me-2"></i>Area (sq.ft)</h5>
+                                    <select class="form-select" name="area" id="uiAreas" required>
+                                        <option value="" selected disabled>Select Area Range</option>
+                                    </select>
+                                    <p class="form-note">Select the approximate area range</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Availability and Square Footage -->
+                        <div class="col-lg-6">
+                            <div class="card h-100 p-3">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-calendar-check me-2"></i>Availability</h5>
+                                    <select class="form-select" name="avail" id="uiAvailability" required>
+                                        <option value="" selected disabled>Select Availability</option>
+                                    </select>
+                                    <p class="form-note">When the property will be available</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="card h-100 p-3">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-ruler-combined me-2"></i>Exact Square Footage</h5>
+                                    <input type="number" class="form-control" name="sqft" id="sqft" required placeholder="Enter exact square footage">
+                                    <p class="form-note">Enter the exact area in square feet (e.g., 1200, 2000)</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- BHK and Bathrooms -->
+                        <div class="col-lg-6">
+                            <div class="card h-100 p-3">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-bed me-2"></i>BHK</h5>
+                                    <input type="number" class="form-control" name="bhk" id="bhk" required placeholder="Enter number of BHK">
+                                    <p class="form-note">Number of bedrooms (e.g., 2, 4)</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="card h-100 p-3">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-bath me-2"></i>Bathrooms</h5>
+                                    <input type="number" class="form-control" name="bath" id="bath" required placeholder="Enter number of bathrooms">
+                                    <p class="form-note">Number of bathrooms (e.g., 2, 4)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-submit btn-lg">
+                            <i class="fas fa-calculator me-2"></i> Estimate Price
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="loading-spinner"></div>
+                
+                <!-- Prediction Result -->
+                <div id="predictionResult" class="prediction-result mt-4" style="display: none;">
+                    <i class="fas fa-chart-line me-2"></i> <span id="predictionText"></span>
+                </div>
+                
+                <!-- Error Message -->
+                <div id="errorMessage" class="error-message mt-4">
+                    <i class="fas fa-exclamation-triangle me-2"></i> <span id="errorText"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section bg-light">
+            <div class="container">
+                <h2 class="text-center section-title">About This Project</h2>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title"><i class="fas fa-project-diagram me-2"></i>Project Overview</h3>
+                                <p>This Bangalore House Price Prediction tool uses machine learning to estimate property prices based on various factors including location, square footage, number of bedrooms (BHK), and more.</p>
+                                <p>The model was trained on historical Bangalore real estate data to provide accurate price predictions for potential home buyers and sellers.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title"><i class="fas fa-cogs me-2"></i>How It Works</h3>
+                                <ul>
+                                    <li>Select the property location from our comprehensive list</li>
+                                    <li>Choose the approximate area range</li>
+                                    <li>Specify availability status</li>
+                                    <li>Enter exact square footage, BHK, and bathroom count</li>
+                                    <li>Get instant price estimation in Indian Rupees</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="container">
+                <h2 class="text-center section-title">Contact Us</h2>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title"><i class="fas fa-envelope me-2"></i>Get In Touch</h3>
+                                <form id="contactForm">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" placeholder="Your Name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="email" class="form-control" placeholder="Your Email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" placeholder="Subject">
+                                    </div>
+                                    <div class="mb-3">
+                                        <textarea class="form-control" rows="5" placeholder="Your Message" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-submit">Send Message</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title"><i class="fas fa-map-marker-alt me-2"></i>Our Information</h3>
+                                <div class="contact-info">
+                                    <p><i class="fas fa-map-marker-alt"></i> Bangalore, Karnataka, India</p>
+                                    <p><i class="fas fa-envelope"></i> prajith------@gmail.com</p>
+                                    <p><i class="fas fa-phone"></i> +91 9876543210</p>
+                                </div>
+                                <div class="map-container">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d497698.6600753034!2d77.3507273574159!3d12.954517011507797!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4fe0!2sBengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <p class="mb-0">© <span id="currentYear"></span> Prajith kumar. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <!-- JavaScript -->
+        <script>
+            // Debugging function
+            function debugLog(message) {
+                const now = new Date();
+                const timestamp = now.toLocaleTimeString();
+                console.log(`[${timestamp}] ${message}`);
+            }
+
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Form submission handler
+            $(document).ready(function() {
+                debugLog("Document ready, initializing form...");
+                
+                // Load dropdown data
+                loadDropdownData();
+                
+                // Prediction form submission
+                $('#predictionForm').on('submit', function(e) {
+                    e.preventDefault();
+                    
+                    debugLog("Form submission started");
+                    
+                    // Hide previous messages
+                    $('#predictionResult').hide();
+                    $('#errorMessage').hide();
+                    
+                    // Show loading spinner
+                    $('#loadingSpinner').show();
+                    
+                    // Get form data
+                    const formData = $(this).serialize();
+                    debugLog("Form data: " + formData);
+                    
+                    // Submit form via AJAX
+                    $.ajax({
+                        type: 'POST',
+                        url: $(this).attr('action'),
+                        data: formData,
+                        success: function(response) {
+                            debugLog("AJAX success, response received");
+                            debugLog("Full response: " + JSON.stringify(response));
+                            
+                            // Hide loading spinner
+                            $('#loadingSpinner').hide();
+                            
+                            if(response.error) {
+                                // Show error message
+                                $('#errorText').text(response.error);
+                                $('#errorMessage').fadeIn();
+                                debugLog("Error in response: " + response.error);
+                            } 
+                            else if(response.prediction_text) {
+                                // Display prediction result
+                                $('#predictionText').text(response.prediction_text);
+                                $('#predictionResult').fadeIn();
+                                debugLog("Prediction successful: " + response.prediction_text);
+                                
+                                // Scroll to result
+                                $('html, body').animate({
+                                    scrollTop: $('#predictionResult').offset().top - 100
+                                }, 800);
+                            } else {
+                                debugLog("Unexpected response format");
+                                $('#errorText').text("Unexpected response from server. Please try again.");
+                                $('#errorMessage').fadeIn();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            debugLog("AJAX error: " + status + ", " + error);
+                            
+                            // Hide loading spinner
+                            $('#loadingSpinner').hide();
+                            
+                            let errorMsg = "An error occurred. Please try again.";
+                            if(xhr.responseJSON && xhr.responseJSON.error) {
+                                errorMsg = xhr.responseJSON.error;
+                            } else if(xhr.responseText) {
+                                try {
+                                    const response = JSON.parse(xhr.responseText);
+                                    if(response.error) {
+                                        errorMsg = response.error;
+                                    }
+                                } catch(e) {
+                                    errorMsg = xhr.responseText;
+                                }
+                            }
+                            
+                            $('#errorText').text(errorMsg);
+                            $('#errorMessage').fadeIn();
+                        }
+                    });
+                });
+
+                // Contact form submission
+                $('#contactForm').on('submit', function(e) {
+                    e.preventDefault();
+                    alert('Thank you for your message! We will get back to you soon.');
+                    this.reset();
+                });
+            });
+
+            function loadDropdownData() {
+                debugLog("Loading dropdown data...");
+                
+                // Load locations
+                $.get("{{ url_for('get_location_names') }}", function(data, status) {
+                    debugLog("Locations response status: " + status);
+                    if(data && data.locations) {
+                        debugLog("Received locations: " + data.locations.length + " items");
+                        var $locations = $('#uiLocations');
+                        $.each(data.locations, function(i, location) {
+                            $locations.append($('<option>', {
+                                value: location,
+                                text: location
+                            }));
+                        });
+                    } else {
+                        debugLog("No location data received or invalid format");
+                    }
+                }).fail(function(xhr, status, error) {
+                    debugLog("Failed to load locations: " + status + ", " + error);
+                });
+
+                // Load areas
+                $.get("{{ url_for('get_area_names') }}", function(data, status) {
+                    debugLog("Areas response status: " + status);
+                    if(data && data.area) {
+                        debugLog("Received areas: " + data.area.length + " items");
+                        var $areas = $('#uiAreas');
+                        $.each(data.area, function(i, area) {
+                            $areas.append($('<option>', {
+                                value: area,
+                                text: area
+                            }));
+                        });
+                    } else {
+                        debugLog("No area data received or invalid format");
+                    }
+                }).fail(function(xhr, status, error) {
+                    debugLog("Failed to load areas: " + status + ", " + error);
+                });
+
+                // Load availability options
+                $.get("{{ url_for('get_availability_names') }}", function(data, status) {
+                    debugLog("Availability response status: " + status);
+                    if(data && data.availability) {
+                        debugLog("Received availability options: " + data.availability.length + " items");
+                        var $availability = $('#uiAvailability');
+                        $.each(data.availability, function(i, availability) {
+                            $availability.append($('<option>', {
+                                value: availability,
+                                text: availability
+                            }));
+                        });
+                    } else {
+                        debugLog("No availability data received or invalid format");
+                    }
+                }).fail(function(xhr, status, error) {
+                    debugLog("Failed to load availability: " + status + ", " + error);
+                });
+            }
+
+            // Input validation
+            $('#sqft, #bhk, #bath').on('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        </script>
+    </body>
+</html>
