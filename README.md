@@ -42,11 +42,11 @@ A Flask-based web application was developed for end-user interaction:
 
 **🛠️ Technologies Used**
 
-*Domain            ----> Tools & Libraries
-Programming       ---->	 Python 3.x
-Data Manipulation ---->	 Pandas, NumPy
-Visualization     ---->	 Matplotlib, Seaborn
-Machine Learning  ---->	 Scikit-learn
+*Domain            ----> Tools & Libraries, 
+Programming       ---->	 Python 3.x, 
+Data Manipulation ---->	 Pandas, NumPy, 
+Visualization     ---->	 Matplotlib, Seaborn, 
+Machine Learning  ---->	 Scikit-learn, 
 Web Framework     ---->	 Flask*
 
 ![sc1](https://github.com/user-attachments/assets/583bf799-16e2-416b-aa23-48004fa37fc1)
